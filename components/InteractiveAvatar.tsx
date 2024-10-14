@@ -131,10 +131,6 @@ export default function InteractiveAvatar() {
 				sendInitText();
 			};
 		}
-
-		return () => {
-			sendInitText();
-		};
 	}, [mediaStream, stream]);
 
 	useEffect(() => {
