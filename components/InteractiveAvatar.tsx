@@ -72,12 +72,12 @@ export default function InteractiveAvatar() {
 				avatarName: '37f4d912aa564663a1cf8d63acd0e1ab',
 				knowledgeId: '4eec5d4c68304528b885efdf795e6edd',
 				voice: {
-					emotion: VoiceEmotion.EXCITED,
+					emotion: VoiceEmotion.SERIOUS,
 				},
 				language: language,
 			});
 
-			await avatar.current?.startVoiceChat();
+			// await avatar.current?.startVoiceChat();
 		} catch (error) {
 			console.error('Error starting avatar session:', error);
 		} finally {
@@ -117,11 +117,29 @@ export default function InteractiveAvatar() {
 	}, []);
 
 	useEffect(() => {
+		const sendInitText = async () => {
+			setIsLoadingRepeat(true);
+			await avatar.current?.speak({ text: 'hi' }).catch((e) => {
+				console.log(e.message);
+			});
+			setIsLoadingRepeat(false);
+		};
 		if (stream && mediaStream.current) {
 			mediaStream.current.srcObject = stream;
 			mediaStream.current.onloadedmetadata = () => {
 				mediaStream.current!.play();
+				sendInitText();
 			};
+		}
+
+		return () => {
+			sendInitText();
+		};
+	}, [mediaStream, stream]);
+
+	useEffect(() => {
+		if (stream && mediaStream.current) {
+			console.log('LOADED', new Date());
 		}
 	}, [mediaStream, stream]);
 
@@ -130,7 +148,7 @@ export default function InteractiveAvatar() {
 			<Card>
 				<CardBody className='h-[500px] flex flex-col justify-center items-center'>
 					{stream ? (
-						<div className='h-[500px] w-[900px] justify-center items-center flex rounded-lg overflow-hidden'>
+						<div className='h-[500px] w-[846px] justify-center items-center flex rounded-lg overflow-hidden video-container'>
 							<video
 								ref={mediaStream}
 								autoPlay

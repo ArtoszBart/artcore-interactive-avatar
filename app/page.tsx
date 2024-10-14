@@ -7,10 +7,10 @@ export default function App() {
 			<div className='info-container'>
 				<div className='info-container-text'>
 					<h1>Skonfiguruj swoje wymarzone auto</h1>
-					<p>
+					{/* <p>
 						Doradca klienta Automotive pomoże ci dobrać samochód
 						idealnie dopasowany pod twoje preferencje
-					</p>
+					</p> */}
 				</div>
 				<FancyButton
 					label='Bezpłatna Konsultacja'

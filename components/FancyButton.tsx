@@ -7,8 +7,13 @@ interface IProps {
 
 export default function FancyButton({ label, href }: IProps) {
 	return (
-		<Link href={href} className='btn fancy-btn'>
+		<a
+			href={href}
+			className='btn fancy-btn'
+			target='_blank'
+			rel='noopener noreferrer'
+		>
 			{label}
-		</Link>
+		</a>
 	);
 }
