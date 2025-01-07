@@ -1,18 +1,18 @@
-import '@/styles/globals.scss';
 import Header from '@/components/Header';
-import { Poppins } from 'next/font/google';
+import '@/styles/globals.scss';
 import { Metadata } from 'next';
+import { Poppins } from 'next/font/google';
 
 const poppins = Poppins({
 	subsets: ['latin'],
 	variable: '--font-sans',
-	weight: ['400', '500', '600'],
+	weight: ['300', '400', '500', '600'],
 });
 
 export const metadata: Metadata = {
 	title: {
-		default: 'Interaktywny Avatar - Art Core',
-		template: `%s - Interaktywny Avatar - Art Core`,
+		default: 'Interaktywny Avatar - Demo',
+		template: `%s - Interaktywny Avatar - Demo`,
 	},
 };
 

@@ -20,6 +20,9 @@ import { usePrevious } from 'ahooks';
 import InteractiveAvatarTextInput from './InteractiveAvatarTextInput';
 
 import { LANGUAGE_LIST } from '@/app/lib/constants';
+import Messages from './Messages';
+import IMessage, { UserType } from '@/models/IMessage';
+import ILanguage from '@/models/ILanguage';
 
 export default function InteractiveAvatar() {
 	const [isLoadingSession, setIsLoadingSession] = useState(false);
@@ -31,6 +34,18 @@ export default function InteractiveAvatar() {
 	const mediaStream = useRef<HTMLVideoElement>(null);
 	const avatar = useRef<StreamingAvatar | null>(null);
 	const [isAvatarTalking, setIsAvatarTalking] = useState(false);
+	const [currentMessage, setCurrentMessage] = useState<string>('');
+	const [messages, setMessages] = useState<IMessage[]>([]);
+	const [isMessageLoading, setIsMessageLoading] = useState<boolean>(false);
+
+	useEffect(() => {
+		if (isMessageLoading || currentMessage === '') return;
+		setMessages((prev) => [
+			{ user: UserType.AVATAR, message: currentMessage },
+			...prev,
+		]);
+		setCurrentMessage('');
+	}, [isMessageLoading]);
 
 	async function fetchAccessToken() {
 		try {
@@ -57,6 +72,13 @@ export default function InteractiveAvatar() {
 		avatar.current.on(StreamingEvents.AVATAR_START_TALKING, () => {
 			setIsAvatarTalking(true);
 		});
+		avatar.current.on(StreamingEvents.AVATAR_TALKING_MESSAGE, (message) => {
+			if (isMessageLoading === false) setIsMessageLoading(true);
+			setCurrentMessage((prev) => (prev += message.detail.message));
+		});
+		avatar.current.on(StreamingEvents.AVATAR_END_MESSAGE, () => {
+			setIsMessageLoading(false);
+		});
 		avatar.current.on(StreamingEvents.AVATAR_STOP_TALKING, () => {
 			setIsAvatarTalking(false);
 		});
@@ -76,8 +98,6 @@ export default function InteractiveAvatar() {
 				},
 				language: language,
 			});
-
-			// await avatar.current?.startVoiceChat();
 		} catch (error) {
 			console.error('Error starting avatar session:', error);
 		} finally {
@@ -90,6 +110,14 @@ export default function InteractiveAvatar() {
 		if (!avatar.current) {
 			return;
 		}
+
+		setMessages((prev) => [
+			{
+				user: UserType.HUMAN,
+				message: text,
+			},
+			...prev,
+		]);
 		await avatar.current.speak({ text: text }).catch((e) => {
 			console.log(e.message);
 		});
@@ -157,6 +185,7 @@ export default function InteractiveAvatar() {
 							>
 								<track kind='captions' />
 							</video>
+							<Messages messages={messages} language={language} />
 						</div>
 					) : !isLoadingSession ? (
 						<div className='preconnect-container'>
