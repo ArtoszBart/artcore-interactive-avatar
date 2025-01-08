@@ -14,15 +14,14 @@ import {
 	SelectItem,
 	Spinner,
 } from '@nextui-org/react';
-import { useEffect, useRef, useState } from 'react';
 import { usePrevious } from 'ahooks';
+import { useEffect, useRef, useState } from 'react';
 
 import InteractiveAvatarTextInput from './InteractiveAvatarTextInput';
 
 import { LANGUAGE_LIST } from '@/app/lib/constants';
-import Messages from './Messages';
 import IMessage, { UserType } from '@/models/IMessage';
-import ILanguage from '@/models/ILanguage';
+import Messages from './Messages';
 
 export default function InteractiveAvatar() {
 	const [isLoadingSession, setIsLoadingSession] = useState(false);
@@ -94,7 +93,7 @@ export default function InteractiveAvatar() {
 				avatarName: '37f4d912aa564663a1cf8d63acd0e1ab',
 				knowledgeId: '4eec5d4c68304528b885efdf795e6edd',
 				voice: {
-					emotion: VoiceEmotion.SERIOUS,
+					emotion: VoiceEmotion.EXCITED,
 				},
 				language: language,
 			});
@@ -173,6 +172,8 @@ export default function InteractiveAvatar() {
 				<CardBody className='h-[500px] flex flex-col justify-center items-center'>
 					{stream ? (
 						<div className='h-[500px] w-[846px] justify-center items-center flex rounded-lg overflow-hidden video-container'>
+							<div className='mask mask-left' />
+							<div className='mask mask-right' />
 							<video
 								ref={mediaStream}
 								autoPlay
@@ -199,9 +200,7 @@ export default function InteractiveAvatar() {
 								}}
 							>
 								{LANGUAGE_LIST.map((lang) => (
-									<SelectItem key={lang.key}>
-										{lang.label}
-									</SelectItem>
+									<SelectItem key={lang.key}>{lang.label}</SelectItem>
 								))}
 							</Select>
 							<button id='start-session' onClick={startSession}>
